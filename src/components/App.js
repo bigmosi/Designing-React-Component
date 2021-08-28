@@ -17,7 +17,7 @@ function App() {
         data={data}
         theme={theme}
         setTheme={setTheme}
-     />
+      />
     </div>
   );
 }
