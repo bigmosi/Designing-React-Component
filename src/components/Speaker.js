@@ -1,6 +1,6 @@
 import React, { useState, useContext } from "react";
 import { SpeakerFilterContext } from "../contexts/SpeakerFilterContext";
-import {SpeakerContext,SpeakerProvider} from "../contexts/SpeakerContext";
+import { SpeakerProvider, SpeakerContext } from "../contexts/SpeakerContext";
 import SpeakerDelete from "./SpeakerDelete";
 
 function Session({ title, room }) {
@@ -32,11 +32,27 @@ function Sessions() {
     );
 }
 
+function ImageWithFallback({ src, ...props }) {
+    const [error, setError] = useState(false);
+    const [imgSrc, setImgSrc] = useState(src);
+
+    function onError() {
+        if (!error) {
+            setImgSrc("/images/speaker-99999.jpg");
+            setError(true);
+        }
+    }
+
+    return <img src={imgSrc} {...props} onError={onError} />;
+}
+
 function SpeakerImage() {
-    const {speaker:{ id, first,last}} = useContext(SpeakerContext);
+    const {
+        speaker: { id, first, last },
+    } = useContext(SpeakerContext);
     return (
         <div className="speaker-img d-flex flex-row justify-content-center align-items-center h-300">
-            <img
+            <ImageWithFallback
                 className="contain-fit"
                 src={`/images/speaker-${id}.jpg`}
                 width="300"
@@ -63,15 +79,18 @@ function SpeakerFavorite() {
               setInTransition(true);
               updateRecord(
                   {
-                      ...speaker, favorite: !speaker.favorite,
+                      ...speaker,
+                      favorite: !speaker.favorite,
                   },
                   doneCallback
-              )
+              );
           }}
       >
         <i
             className={
-                speaker.favorite === true ? "fa fa-star orange" : "fa fa-star-o orange"
+                speaker.favorite === true
+                    ? "fa fa-star orange"
+                    : "fa fa-star-o orange"
             }
         />{" "}
           Favorite{" "}
@@ -85,7 +104,7 @@ function SpeakerFavorite() {
 
 function SpeakerDemographics() {
     const { speaker } = useContext(SpeakerContext);
-    const {first,last,bio,company,twitterHandle,favorite} = speaker;
+    const { first, last, bio, company, twitterHandle, favorite } = speaker;
     return (
         <div className="speaker-info">
             <div className="d-flex justify-content-between mb-3">
@@ -113,19 +132,23 @@ function SpeakerDemographics() {
 
 function Speaker({ speaker, updateRecord, insertRecord, deleteRecord }) {
     const { showSessions } = useContext(SpeakerFilterContext);
+    console.log(`speaker: ${speaker.id} ${speaker.first} ${speaker.last}`);
     return (
-      <SpeakerProvider speaker={speaker} updateRecord={updateRecord}
-       insertRecord={insertRecord} deleteRecord={deleteRecord}
-      >
-        <div className="col-xs-12 col-sm-12 col-md-6 col-lg-4 col-sm-12 col-xs-12">
-            <div className="card card-height p-4 mt-4">
-                <SpeakerImage  />
-                <SpeakerDemographics />
+        <SpeakerProvider
+            speaker={speaker}
+            updateRecord={updateRecord}
+            insertRecord={insertRecord}
+            deleteRecord={deleteRecord}
+        >
+            <div className="col-xs-12 col-sm-12 col-md-6 col-lg-4 col-sm-12 col-xs-12">
+                <div className="card card-height p-4 mt-4">
+                    <SpeakerImage />
+                    <SpeakerDemographics />
+                </div>
+                {showSessions === true ? <Sessions /> : null}
+                <SpeakerDelete />
             </div>
-            {showSessions === true ? <Sessions  /> : null}
-            <SpeakerDelete />
-        </div>
-      </SpeakerProvider>
+        </SpeakerProvider>
     );
 }
 
