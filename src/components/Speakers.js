@@ -1,16 +1,14 @@
-import SpeakersList from './SpeakersList';
-import SpeakersToolbar from './SpeakersToolbar';
-import { useState } from "react";
-import {SpeakerFilterProvider} from "../contexts/SpeakerFilterContext";
+import SpeakersToolbar from "./SpeakersToolbar";
+import SpeakersList from "./SpeakersList";
+import { SpeakerFilterProvider } from "../contexts/SpeakerFilterContext";
 
 function Speakers() {
-  const [showSessions, setShowSessions] = useState(true);
-  return(
-    <SpeakerFilterProvider startingShowSessions={false}>
-      <SpeakersToolbar/>
-      <SpeakersList />
-    </SpeakerFilterProvider>
-  );
+    return (
+        <SpeakerFilterProvider startingShowSessions={false}>
+            <SpeakersToolbar />
+            <SpeakersList />
+        </SpeakerFilterProvider>
+    );
 }
 
 export default Speakers;
